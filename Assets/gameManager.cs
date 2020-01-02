@@ -11,17 +11,8 @@ public class gameManager : MonoBehaviour
     public GameObject[] noteDot;
     public List<string> myList = new List<string>();
     public string LastCharacterofMyList;
+    public float notesDelay;
    
-
-    public GameObject testObj;
- 
-
-    
-    void Start()
-    {
-        
-    }
-
     
     void Update()
     {
@@ -51,17 +42,34 @@ public class gameManager : MonoBehaviour
         }
     }
 
+    //this method adds in a list each letter
     public void AddInListTheInputNotesEachSeparateLetter(string x)
     {
         
         for (int i = 0; i < x.Length; i++)
         {
-
             myList.Add(x[i].ToString());
 
-            Debug.Log("test");
+            if (x[i] == '#')
+            {               
+                
+                myList[i-1]=(x[i-1].ToString() + x[i]);
+                if (x[i] == '#')
+                {
 
-        }       
+                    myList[i] = "";
+
+                }
+                
+            }
+
+
+
+
+
+
+
+        }
 
     }
     
@@ -75,38 +83,53 @@ public class gameManager : MonoBehaviour
             if (texts[i] == "C")
             {
                 noteDot[0].SetActive(true);
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(notesDelay);
                 noteDot[0].SetActive(false);
             }else if (texts[i] == "D")
             {
                 noteDot[1].SetActive(true);
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(notesDelay);
                 noteDot[1].SetActive(false);
             }else if (texts[i] == "E")
             {
                 noteDot[2].SetActive(true);
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(notesDelay);
                 noteDot[2].SetActive(false);
             }else if (texts[i] == "F")
             {
                 noteDot[3].SetActive(true);
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(notesDelay);
                 noteDot[3].SetActive(false);
             }else if (texts[i] == "G")
             {
                 noteDot[4].SetActive(true);
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(notesDelay);
                 noteDot[4].SetActive(false);
             }else if (texts[i] == "A")
             {
                 noteDot[5].SetActive(true);
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(notesDelay);
                 noteDot[5].SetActive(false);
             }else if (texts[i] == "B")
             {
                 noteDot[6].SetActive(true);
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(notesDelay);
                 noteDot[6].SetActive(false);
+            }else if (texts[i] == "A#")
+            {
+                noteDot[9].SetActive(true);
+                yield return new WaitForSeconds(notesDelay);
+                noteDot[9].SetActive(false);
+            }else if (texts[i] == "C#")
+            {
+                noteDot[7].SetActive(true);
+                yield return new WaitForSeconds(notesDelay);
+                noteDot[7].SetActive(false);
+            }else if (texts[i] == "F#")
+            {
+                noteDot[8].SetActive(true);
+                yield return new WaitForSeconds(notesDelay);
+                noteDot[8].SetActive(false);
             }
         }
 
