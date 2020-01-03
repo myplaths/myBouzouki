@@ -12,8 +12,11 @@ public class gameManager : MonoBehaviour
     public List<string> myList = new List<string>();
     public string LastCharacterofMyList;
     public float notesDelay;
-   
-    
+
+    public int counterx = 0;
+    public string outputName;
+    public string withoutSpace;
+
     void Update()
     {
 
@@ -31,7 +34,26 @@ public class gameManager : MonoBehaviour
 
     }
 
-   
+    public void RemoveEmptySpace()
+    {
+        for (int i = 0; i < myList.Count; i++)
+        {
+            outputName += myList[i];
+        }
+
+        foreach (var letter in outputName)
+        {
+            if (letter == ' ')
+            {
+                continue;
+            }
+            withoutSpace += letter;
+        }
+
+        Debug.Log("its called");
+        string text = inputNotes.text;
+        //outputName.Trim();
+    }
 
     void InputfieldToUpperCase()
     {
@@ -39,6 +61,7 @@ public class gameManager : MonoBehaviour
         if (text != inputNotes.text.ToUpper())
         {
             inputNotes.text = inputNotes.text.ToUpper();
+            
         }
     }
 
@@ -63,12 +86,6 @@ public class gameManager : MonoBehaviour
                 
             }
 
-
-
-
-
-
-
         }
 
     }
@@ -77,15 +94,28 @@ public class gameManager : MonoBehaviour
 
     IEnumerator SetActiveWithString(List<string> texts)
     {
-
+       
         for (int i = 0; i < texts.Count; i++)
         {
             if (texts[i] == "C")
             {
+                if (noteDot[0].activeSelf)
+                {
+                    noteDot[0].SetActive(false);
+                }
+                counterx++;
+                if (counterx > 1)
+                {
+                    Debug.Log("counterx is " + counterx);
+                }
+               
                 noteDot[0].SetActive(true);
                 yield return new WaitForSeconds(notesDelay);
                 noteDot[0].SetActive(false);
-            }else if (texts[i] == "D")
+               
+
+            }
+            else if (texts[i] == "D")
             {
                 noteDot[1].SetActive(true);
                 yield return new WaitForSeconds(notesDelay);
@@ -140,16 +170,18 @@ public class gameManager : MonoBehaviour
     public void DoSomethingWithNotes()
     {
         AddInListTheInputNotesEachSeparateLetter(inputNotes.text);
-        for (int i = 0; i < myList.Count; i++)
-        {
+       
             StartCoroutine(SetActiveWithString(myList));
-        }
+        RemoveEmptySpace();
+
+
 
     }
 
     public void Clear()
     {
         myList.Clear();
+        counterx = 0;
        
     }
 }
