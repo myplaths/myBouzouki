@@ -35,8 +35,9 @@ public class gameManager : MonoBehaviour
 
 
     }
-    void AddInmyList()
+    void AddsTheNotesTomyList()
     {
+        //adds the outputName to the List one by one letter
         for (int i = 0; i < ReturnNotes().Length; i++)
         {
             myList.Add(ReturnNotes()[i].ToString());
@@ -53,16 +54,19 @@ public class gameManager : MonoBehaviour
         }
     }
 
-
+    //Returns the notes without Space
     public string ReturnNotes()
     {
          string outputName = "";
         string withoutSpace = ""; 
+        
+        //first we use the outputname to add the whole list into one string
         for (int i = 0; i < GetList.Count; i++)
         {
             outputName += GetList[i];
         }
 
+        //removes the space from the outputName so something like A B C it converts it to ABC
         foreach (var letter in outputName)
         {
             if (letter == ' ')
@@ -190,7 +194,7 @@ public class gameManager : MonoBehaviour
     public void DoSomethingWithNotes()
     {
         AddInListTheInputNotesEachSeparateLetter(inputNotes.text);
-        AddInmyList();
+        AddsTheNotesTomyList();
         StartCoroutine(SetActiveWithString(myList));
         
     }
