@@ -16,6 +16,8 @@ public class gameManager : MonoBehaviour
     public float notesDelay;
 
     public int counterx = 0;
+    public AudioSource[] soundNotes;
+
     
 
 
@@ -37,7 +39,7 @@ public class gameManager : MonoBehaviour
     }
     void AddsTheNotesTomyList()
     {
-        //adds the outputName to the List one by one letter
+        //adds the outputName(refers to the each letter in inputnotes field) to the List one by one
         for (int i = 0; i < ReturnNotes().Length; i++)
         {
             myList.Add(ReturnNotes()[i].ToString());
@@ -45,10 +47,15 @@ public class gameManager : MonoBehaviour
         }
         for (int i = 0; i < myList.Count; i++)
         {
-           
+           //where the list contains #
             if (myList[i].Contains("#"))
             {
+                //go to the previous element and merry that together like if 
+                //element 1 is A and element 2 is #
+                //Then it will become A#
                 myList[i - 1] = myList[i-1] + myList[i];
+
+                //This line here just removes the # from the second element(given the example above) after is added to the list.
                 myList.RemoveAt(i);
             }
         }
@@ -79,6 +86,7 @@ public class gameManager : MonoBehaviour
         return withoutSpace;
     }
 
+    //this method just makes the Inputfield to UpperCase
     void InputfieldToUpperCase()
     {
         string text = inputNotes.text;
@@ -119,7 +127,7 @@ public class gameManager : MonoBehaviour
                 {
                     Debug.Log("counterx is " + counterx);
                 }
-
+                soundNotes[0].Play();
                 noteDot[0].SetActive(true);
                 yield return new WaitForSeconds(notesDelay);
                 noteDot[0].SetActive(false);
@@ -128,59 +136,69 @@ public class gameManager : MonoBehaviour
             }
             else if (texts[i] == "D")
             {
+                soundNotes[1].Play();
                 noteDot[1].SetActive(true);
                 yield return new WaitForSeconds(notesDelay);
                 noteDot[1].SetActive(false);
             }
             else if (texts[i] == "E")
             {
+                soundNotes[2].Play();
                 noteDot[2].SetActive(true);
                 yield return new WaitForSeconds(notesDelay);
                 noteDot[2].SetActive(false);
             }
             else if (texts[i] == "F")
             {
+                soundNotes[3].Play();
                 noteDot[3].SetActive(true);
                 yield return new WaitForSeconds(notesDelay);
                 noteDot[3].SetActive(false);
             }
             else if (texts[i] == "G")
             {
+                soundNotes[4].Play();
                 noteDot[4].SetActive(true);
                 yield return new WaitForSeconds(notesDelay);
                 noteDot[4].SetActive(false);
             }if (texts[i] == "G#")
             {
+                soundNotes[5].Play();
                 noteDot[10].SetActive(true);
                 yield return new WaitForSeconds(notesDelay);
                 noteDot[10].SetActive(false);
             }
             else if (texts[i] == "A")
             {
+                soundNotes[6].Play();
                 noteDot[5].SetActive(true);
                 yield return new WaitForSeconds(notesDelay);
                 noteDot[5].SetActive(false);
             }
             else if (texts[i] == "B")
             {
+                soundNotes[7].Play();
                 noteDot[6].SetActive(true);
                 yield return new WaitForSeconds(notesDelay);
                 noteDot[6].SetActive(false);
             }
             else if (texts[i] == "A#")
             {
+                soundNotes[8].Play();
                 noteDot[9].SetActive(true);
                 yield return new WaitForSeconds(notesDelay);
                 noteDot[9].SetActive(false);
             }
             else if (texts[i] == "C#")
             {
+                soundNotes[9].Play();
                 noteDot[7].SetActive(true);
                 yield return new WaitForSeconds(notesDelay);
                 noteDot[7].SetActive(false);
             }
             else if (texts[i] == "F#")
             {
+                soundNotes[10].Play();
                 noteDot[8].SetActive(true);
                 yield return new WaitForSeconds(notesDelay);
                 noteDot[8].SetActive(false);
