@@ -5,55 +5,83 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class gameManager : MonoBehaviour
+public class GameManager : MonoBehaviour 
 {
-    List<string> GetList = new List<string>();
-    public List<string> myList = new List<string>();
+    //Public variables are used in very specific cases, if you need to show in the inspector, use the SerializeField property.
+    //Keep this in mind also for methods, only mark them as public, if it is really needed.
+    //Also initializing your variables, even to null and/or 0, you will get rid of all the warnings in the unity's console.
+    [SerializeField] private List<string> myList = new List<string>();
+    [SerializeField] private AudioSource[] soundNotes = null;
+    [SerializeField] private GameObject[] noteDot = null;
+    [SerializeField] private InputField inputNotes = null;
+   
+    [SerializeField] private float notesDelay = 0f;
+    [SerializeField] private int counterx = 0;
 
-    public InputField inputNotes;
-    public GameObject[] noteDot;
-    public string LastCharacterofGetList;
-    public float notesDelay;
-
-    public int counterx = 0;
-    public AudioSource[] soundNotes;
-
+    [SerializeField] private AudioSource emptyAudio = null;
     
 
 
+
+
+
+    private void Awake()
+    {
+        //Use this if you want to keep your methods private, the other way is to make InputfieldToUpperCase a public method
+        //and in the InputField object add an "On Value Changed" event, reference this script and call the method.
+
+        //How you want to do it is up to you.
+
+        //This will add a listener to the InputField and whenever you type in it, it will call InputfieldToUpperCase, so you don't have to call it every frame.
+        //make inputnotes To UpperCase
+        inputNotes.onValueChanged.AddListener(delegate { InputfieldToUpperCase(); });
+    }
+
     void Update()
     {
-
-        //make inputnotes To UpperCase
-        InputfieldToUpperCase();
-
-
-        if (Input.GetKeyDown("v"))
+        
+        if (Input.GetKeyDown(KeyCode.V)) //This is my personal opinion but I think it is much better to use KeyCode instead of a string.
         {
-           
 
         }
-
-
-
     }
+
+    public void DoSomethingWithNotes()
+    {
+        
+        //You are adding each character to a list and later you're converting it back to a string.
+        //Just use the inputNotes.text inside the ReturnNotes method.
+        AddsTheNotesTomyList();
+        StartCoroutine(SetActiveWithString(myList));
+    }
+
+    public void Zempekiko()
+    {
+        inputNotes.text = "DSGFGFGFDSGFGSD";
+    }
+
     void AddsTheNotesTomyList()
     {
+        //Here makes sense to have a local variable for the ReturnNotes, so you just call it once.
+        string notes = ReturnNotes();
+
         //adds the outputName(refers to the each letter in inputnotes field) to the List one by one
-        for (int i = 0; i < ReturnNotes().Length; i++)
+        for (int i = 0; i < notes.Length; i++)
         {
-            myList.Add(ReturnNotes()[i].ToString());
-            
+            myList.Add(notes[i].ToString());
         }
+
         for (int i = 0; i < myList.Count; i++)
         {
-           //where the list contains #
-            if (myList[i].Contains("#"))
+
+            //I also found a bug when checking for the "#", because if you only type, for example "C#", it gets to the first element of the list, after you add more notes it will check again the first element which contains "#", and it will try to assign to the first "element - 1" or myList[i - 1] and you'll get out of bounds. The solution is to check if the element of the list is the size of 1.
+            //where the list contains #
+            if (myList[i].Contains("#") && myList[i].Length == 1)
             {
-                //go to the previous element and merry that together like if 
+                //go to the previous element and merry that together like if
                 //element 1 is A and element 2 is #
                 //Then it will become A#
-                myList[i - 1] = myList[i-1] + myList[i];
+                myList[i - 1] = myList[i - 1] + myList[i];
 
                 //This line here just removes the # from the second element(given the example above) after is added to the list.
                 myList.RemoveAt(i);
@@ -61,167 +89,129 @@ public class gameManager : MonoBehaviour
         }
     }
 
+
     //Returns the notes without Space
     public string ReturnNotes()
     {
-         string outputName = "";
-        string withoutSpace = ""; 
-        
+        //string outputName = "";
+        string withoutSpace = "";
+
         //first we use the outputname to add the whole list into one string
-        for (int i = 0; i < GetList.Count; i++)
-        {
-            outputName += GetList[i];
-        }
+        // for (int i = 0; i < GetList.Count; i++)
+        // {
+        //     outputName += GetList[i];
+        // }
 
         //removes the space from the outputName so something like A B C it converts it to ABC
-        foreach (var letter in outputName)
-        {
+
+        foreach (var letter in inputNotes.text) //You can use inputNotes.text directly here, having AddInListTheInputNotesEachSeparateLetter method is confusing.
+        {                                       //Since we don't make use of the GetList anymore, the outputName and the for loop are not needed.
             if (letter == ' ')
             {
                 continue;
             }
             withoutSpace += letter;
-        }        
-       
+        }
+
         return withoutSpace;
     }
+
 
     //this method just makes the Inputfield to UpperCase
     void InputfieldToUpperCase()
     {
-        string text = inputNotes.text;
-        if (text != inputNotes.text.ToUpper())
-        {
-            inputNotes.text = inputNotes.text.ToUpper();
+        //I really think this check is not needed, you can keep it but I think the messege is clearer and more simple without it.
+        inputNotes.text = inputNotes.text.ToUpper();
 
-        }
+       
     }
 
-    //this method adds in a list each letter
-    public void AddInListTheInputNotesEachSeparateLetter(string x)
+    public void Clear()
     {
-
-        for (int i = 0; i < x.Length; i++)
-        {
-            GetList.Add(x[i].ToString());          
-
-        }
-
+        //GetList.Clear(); //Not in use anymore.
+        myList.Clear();
+        counterx = 0;
+        inputNotes.text = "";
     }
-
-
 
     IEnumerator SetActiveWithString(List<string> texts)
     {
-
         for (int i = 0; i < texts.Count; i++)
         {
-            if (texts[i] == "C")
+            switch (texts[i])
             {
-                if (noteDot[0].activeSelf)
-                {
-                    noteDot[0].SetActive(false);
-                }
-                counterx++;
-                if (counterx > 1)
-                {
-                    Debug.Log("counterx is " + counterx);
-                }
-                soundNotes[0].Play();
-                noteDot[0].SetActive(true);
-                yield return new WaitForSeconds(notesDelay);
-                noteDot[0].SetActive(false);
+                
+                case "C":
+                    {
+//                        if (noteDot[0].activeSelf)
+//                        {
+//                            noteDot[0].SetActive(false);
+//                        }
 
+//                        counterx++;
 
-            }
-            else if (texts[i] == "D")
-            {
-                soundNotes[1].Play();
-                noteDot[1].SetActive(true);
-                yield return new WaitForSeconds(notesDelay);
-                noteDot[1].SetActive(false);
-            }
-            else if (texts[i] == "E")
-            {
-                soundNotes[2].Play();
-                noteDot[2].SetActive(true);
-                yield return new WaitForSeconds(notesDelay);
-                noteDot[2].SetActive(false);
-            }
-            else if (texts[i] == "F")
-            {
-                soundNotes[3].Play();
-                noteDot[3].SetActive(true);
-                yield return new WaitForSeconds(notesDelay);
-                noteDot[3].SetActive(false);
-            }
-            else if (texts[i] == "G")
-            {
-                soundNotes[4].Play();
-                noteDot[4].SetActive(true);
-                yield return new WaitForSeconds(notesDelay);
-                noteDot[4].SetActive(false);
-            }if (texts[i] == "G#")
-            {
-                soundNotes[5].Play();
-                noteDot[10].SetActive(true);
-                yield return new WaitForSeconds(notesDelay);
-                noteDot[10].SetActive(false);
-            }
-            else if (texts[i] == "A")
-            {
-                soundNotes[6].Play();
-                noteDot[5].SetActive(true);
-                yield return new WaitForSeconds(notesDelay);
-                noteDot[5].SetActive(false);
-            }
-            else if (texts[i] == "B")
-            {
-                soundNotes[7].Play();
-                noteDot[6].SetActive(true);
-                yield return new WaitForSeconds(notesDelay);
-                noteDot[6].SetActive(false);
-            }
-            else if (texts[i] == "A#")
-            {
-                soundNotes[8].Play();
-                noteDot[9].SetActive(true);
-                yield return new WaitForSeconds(notesDelay);
-                noteDot[9].SetActive(false);
-            }
-            else if (texts[i] == "C#")
-            {
-                soundNotes[9].Play();
-                noteDot[7].SetActive(true);
-                yield return new WaitForSeconds(notesDelay);
-                noteDot[7].SetActive(false);
-            }
-            else if (texts[i] == "F#")
-            {
-                soundNotes[10].Play();
-                noteDot[8].SetActive(true);
-                yield return new WaitForSeconds(notesDelay);
-                noteDot[8].SetActive(false);
+//#if UNITY_EDITOR //https://docs.unity3d.com/Manual/PlatformDependentCompilation.html
+
+//                        if (counterx > 1)
+//                        {
+//                            Debug.Log("counterx is " + counterx);
+//                        }
+//#endif
+
+                        yield return PlayNote(soundNotes[0], noteDot[0]);
+                        break;
+                    }
+                case "S":
+                    yield return PlayEmpty(emptyAudio);
+                    break;
+                case "D":
+                    yield return PlayNote(soundNotes[1], noteDot[1]);
+                    break;
+                case "E":
+                    yield return PlayNote(soundNotes[2], noteDot[2]);
+                    break;
+                case "F":
+                    yield return PlayNote(soundNotes[3], noteDot[3]);
+                    break;
+                case "G":
+                    yield return PlayNote(soundNotes[4], noteDot[4]);
+                    break;
+                case "G#":
+                    yield return PlayNote(soundNotes[5], noteDot[10]);
+                    break;
+                case "A":
+                    yield return PlayNote(soundNotes[6], noteDot[5]);
+                    break;
+                case "B":
+                    yield return PlayNote(soundNotes[7], noteDot[6]);
+                    break;
+                case "A#":
+                    yield return PlayNote(soundNotes[8], noteDot[9]);
+                    break;
+                case "C#":
+                    yield return PlayNote(soundNotes[9], noteDot[7]);
+                    break;
+                case "F#":
+                    yield return PlayNote(soundNotes[10], noteDot[8]);
+                    break;
             }
         }
 
         yield return null;
     }
 
-
-    public void DoSomethingWithNotes()
+    private IEnumerator PlayNote(AudioSource soundNotes, GameObject noteDot)
     {
-        AddInListTheInputNotesEachSeparateLetter(inputNotes.text);
-        AddsTheNotesTomyList();
-        StartCoroutine(SetActiveWithString(myList));
-        
+        soundNotes.Play();
+        noteDot.SetActive(true);
+        yield return new WaitForSeconds(notesDelay);
+        noteDot.SetActive(false);
     }
-
-    public void Clear()
+    
+    private IEnumerator PlayEmpty(AudioSource soundNotes)
     {
-        GetList.Clear();
-        myList.Clear();
-        counterx = 0;
-
+        soundNotes.Play();        
+        yield return new WaitForSeconds(notesDelay);
+        
     }
 }
