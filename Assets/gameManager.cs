@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,10 +17,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private InputField inputNotes = null;
    
     [SerializeField] private float notesDelay = 0f;
-    [SerializeField] private int counterx = 0;
+    [SerializeField] private int counter = 0;
 
     [SerializeField] private AudioSource emptyAudio = null;
-    
+    [SerializeField]
+    private bool testBool;
+    public int getNumber;
+
+    [SerializeField] private List<string> tempList = new List<string>();
+
 
 
 
@@ -33,15 +39,30 @@ public class GameManager : MonoBehaviour
         //How you want to do it is up to you.
 
         //This will add a listener to the InputField and whenever you type in it, it will call InputfieldToUpperCase, so you don't have to call it every frame.
+        
         //make inputnotes To UpperCase
         inputNotes.onValueChanged.AddListener(delegate { InputfieldToUpperCase(); });
+        
     }
+
+    
 
     void Update()
     {
         
+        //Debug.Log(myList.Count - 1);
+        //if (getNumber == myList.Count)
+        //{
+        //    var item = myList.Count;
+        //    myList.Clear();
+        //    getNumber = 0;
+        //    //myList.FindIndex(item);
+        //    Debug.Log("text " + item);
+
+        //}
         if (Input.GetKeyDown(KeyCode.V)) //This is my personal opinion but I think it is much better to use KeyCode instead of a string.
         {
+           string mystring = myList[myList.Count - 1];
 
         }
     }
@@ -53,6 +74,7 @@ public class GameManager : MonoBehaviour
         //Just use the inputNotes.text inside the ReturnNotes method.
         AddsTheNotesTomyList();
         StartCoroutine(SetActiveWithString(myList));
+       
     }
 
     public void Zempekiko()
@@ -62,6 +84,7 @@ public class GameManager : MonoBehaviour
 
     void AddsTheNotesTomyList()
     {
+        
         //Here makes sense to have a local variable for the ReturnNotes, so you just call it once.
         string notes = ReturnNotes();
 
@@ -71,6 +94,7 @@ public class GameManager : MonoBehaviour
             myList.Add(notes[i].ToString());
         }
 
+        
         for (int i = 0; i < myList.Count; i++)
         {
 
@@ -86,26 +110,29 @@ public class GameManager : MonoBehaviour
                 //This line here just removes the # from the second element(given the example above) after is added to the list.
                 myList.RemoveAt(i);
             }
+
         }
+        myList = new List<string>();
+        //getNumber += myList.Count();
+        Debug.Log("Getnumber is " + getNumber) ;
+
+
     }
 
+    IEnumerator Example()
+    {
+        yield return new WaitForSeconds(2);
+        myList.Clear();
 
+    }
     //Returns the notes without Space
     public string ReturnNotes()
     {
-        //string outputName = "";
-        string withoutSpace = "";
-
-        //first we use the outputname to add the whole list into one string
-        // for (int i = 0; i < GetList.Count; i++)
-        // {
-        //     outputName += GetList[i];
-        // }
-
-        //removes the space from the outputName so something like A B C it converts it to ABC
-
-        foreach (var letter in inputNotes.text) //You can use inputNotes.text directly here, having AddInListTheInputNotesEachSeparateLetter method is confusing.
-        {                                       //Since we don't make use of the GetList anymore, the outputName and the for loop are not needed.
+       
+        string withoutSpace = "";       
+        //a b cd
+        foreach (var letter in inputNotes.text) 
+        {                                       
             if (letter == ' ')
             {
                 continue;
@@ -119,18 +146,15 @@ public class GameManager : MonoBehaviour
 
     //this method just makes the Inputfield to UpperCase
     void InputfieldToUpperCase()
-    {
-        //I really think this check is not needed, you can keep it but I think the messege is clearer and more simple without it.
-        inputNotes.text = inputNotes.text.ToUpper();
-
-       
+    {        
+        inputNotes.text = inputNotes.text.ToUpper();       
     }
 
     public void Clear()
     {
         //GetList.Clear(); //Not in use anymore.
         myList.Clear();
-        counterx = 0;
+       
         inputNotes.text = "";
     }
 
