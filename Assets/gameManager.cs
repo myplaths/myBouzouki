@@ -50,14 +50,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         
-        //Debug.Log(myList.Count - 1);
-        //if (getNumber == myList.Count)
-        //{
-        //    var item = myList.Count;
-        //    myList.Clear();
-        //    getNumber = 0;
-        //    //myList.FindIndex(item);
-        //    Debug.Log("text " + item);
+      
 
         //}
         if (Input.GetKeyDown(KeyCode.V)) //This is my personal opinion but I think it is much better to use KeyCode instead of a string.
@@ -74,6 +67,7 @@ public class GameManager : MonoBehaviour
         //Just use the inputNotes.text inside the ReturnNotes method.
         AddsTheNotesTomyList();
         StartCoroutine(SetActiveWithString(myList));
+        Clear();
        
     }
 
@@ -112,7 +106,7 @@ public class GameManager : MonoBehaviour
             }
 
         }
-        myList = new List<string>();
+        
         //getNumber += myList.Count();
         Debug.Log("Getnumber is " + getNumber) ;
 
@@ -167,20 +161,7 @@ public class GameManager : MonoBehaviour
                 
                 case "C":
                     {
-//                        if (noteDot[0].activeSelf)
-//                        {
-//                            noteDot[0].SetActive(false);
-//                        }
 
-//                        counterx++;
-
-//#if UNITY_EDITOR //https://docs.unity3d.com/Manual/PlatformDependentCompilation.html
-
-//                        if (counterx > 1)
-//                        {
-//                            Debug.Log("counterx is " + counterx);
-//                        }
-//#endif
 
                         yield return PlayNote(soundNotes[0], noteDot[0]);
                         break;
